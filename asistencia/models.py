@@ -2,7 +2,6 @@ from django.db import models
 from django.contrib.auth.models import User
 
 class Estudiante(models.Model):
-    codigo_barras = models.CharField(max_length=50, unique=True)
     dni = models.CharField(max_length=8, unique=True, null=True, blank=True)
     nombre = models.CharField(max_length=100)
     apellidos = models.CharField(max_length=100, null=True, blank=True)

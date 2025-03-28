@@ -5,8 +5,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" 
-                 alt="Logo Colegio" class="school-logo">
+            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" alt="Logo Colegio" class="school-logo">
             <h3 class="school-name">Colegio adventista Jose pardo</h3>
             <p class="school-motto">Educación de Calidad</p>
         </div>
@@ -93,12 +92,8 @@
                             {% csrf_token %}
                             <div class="form-grid">
                                 <div class="form-group">
-                                    <label for="codigo_barras" class="form-label">Código de Barras</label>
-                                    <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" required>
-                                </div>
-                                <div class="form-group">
                                     <label for="dni" class="form-label">DNI</label>
-                                    <input type="text" class="form-control" id="dni" name="dni">
+                                    <input type="text" class="form-control" id="dni" name="dni" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="nombre" class="form-label">Nombres</label>
@@ -160,10 +155,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('estudianteForm');
     const resultadoDiv = document.getElementById('resultado');
-
+    
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         resultadoDiv.textContent = 'Procesando...';
         resultadoDiv.className = 'alert alert-info mt-3';
         resultadoDiv.style.display = 'block';
@@ -189,7 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 form.reset();
                 setTimeout(() => {
                     resultadoDiv.style.display = 'none';
-                    document.getElementById('codigo_barras').focus();
+                    document.getElementById('dni').focus();
                 }, 3000);
             } else {
                 throw new Error(data.message || 'Error al registrar');

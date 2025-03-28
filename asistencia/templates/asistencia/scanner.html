@@ -5,8 +5,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
-            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" 
-                 alt="Logo Colegio" class="school-logo">
+            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" alt="Logo Colegio" class="school-logo">
             <h3 class="school-name">Colegio adventista Jose pardo</h3>
             <p class="school-motto">Educación de Calidad</p>
         </div>
@@ -39,7 +38,7 @@
                     <i class="fas fa-user-graduate"></i>
                     <span>Lista de Estudiantes</span>
                 </a>
-                <a href="{% url 'agregar_estudiante' %}" class="menu-item {% if request.path == '/agregar-estudiante/' %}active{% endif %}">
+                <a href="{% url 'agregar_estudiante' %}" class="menu-item">
                     <i class="fas fa-plus-circle"></i>
                     <span>Agregar Estudiante</span>
                 </a>
@@ -81,10 +80,17 @@
                 <h2 class="text-center mb-4">Registro de Asistencia</h2>
                 <div class="card">
                     <div class="card-body text-center">
-                        <p>Escanee el código de barras del estudiante:</p>
+                        <p>Ingrese el DNI del estudiante:</p>
                         <form id="scannerForm" onsubmit="return false;">
-                            <input type="text" id="codigoInput" class="form-control form-control-lg text-center" autofocus>
+                            <input type="text" id="dniInput" class="form-control form-control-lg text-center" autofocus>
                         </form>
+                        <!-- Añadido spinner de carga -->
+                        <div id="loadingSpinner" class="mt-3" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-2">Procesando...</p>
+                        </div>
                         <div id="resultado" class="mt-3 alert alert-success" style="display:none;"></div>
                     </div>
                 </div>
@@ -97,48 +103,60 @@
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const codigoInput = document.getElementById('codigoInput');
+    const dniInput = document.getElementById('dniInput');
     const resultadoDiv = document.getElementById('resultado');
     const scannerForm = document.getElementById('scannerForm');
+    const loadingSpinner = document.getElementById('loadingSpinner');
 
-    // Listen for Enter key press
-    codigoInput.addEventListener('keypress', function(e) {
+    dniInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
-            e.preventDefault(); // Prevent form submission
+            e.preventDefault();
             
             if (this.value.trim() !== '') {
+                // Mostrar spinner de carga
+                loadingSpinner.style.display = 'block';
+                resultadoDiv.style.display = 'none';
+                
                 fetch('/registrar/', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-CSRFToken': '{{ csrf_token }}'
                     },
-                    body: `codigo=${encodeURIComponent(this.value.trim())}`
+                    body: `dni=${encodeURIComponent(this.value.trim())}`
                 })
                 .then(response => response.json())
                 .then(data => {
+                    // Ocultar spinner
+                    loadingSpinner.style.display = 'none';
+                    
                     if (data.status === 'success') {
                         resultadoDiv.textContent = `Asistencia registrada: ${data.nombre}`;
+                        resultadoDiv.className = 'mt-3 alert alert-success';
                         resultadoDiv.style.display = 'block';
-                        
-                        // Clear input field immediately after successful scan
-                        codigoInput.value = '';
+                        dniInput.value = '';
                         
                         setTimeout(() => {
                             resultadoDiv.style.display = 'none';
-                            codigoInput.focus();
+                            dniInput.focus();
                         }, 3000);
                     } else {
-                        alert(data.message);
-                        codigoInput.value = ''; // Clear input even on error
-                        codigoInput.focus();
+                        resultadoDiv.textContent = data.message;
+                        resultadoDiv.className = 'mt-3 alert alert-danger';
+                        resultadoDiv.style.display = 'block';
+                        dniInput.value = '';
+                        dniInput.focus();
                     }
                 })
                 .catch(error => {
+                    // Ocultar spinner y mostrar error
+                    loadingSpinner.style.display = 'none';
                     console.error('Error:', error);
-                    alert('Ocurrió un error al registrar la asistencia');
-                    codigoInput.value = ''; // Clear input on fetch error
-                    codigoInput.focus();
+                    resultadoDiv.textContent = 'Ocurrió un error al registrar la asistencia';
+                    resultadoDiv.className = 'mt-3 alert alert-danger';
+                    resultadoDiv.style.display = 'block';
+                    dniInput.value = '';
+                    dniInput.focus();
                 });
             }
         }

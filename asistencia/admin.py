@@ -3,10 +3,10 @@ from .models import Estudiante, RegistroAsistencia
 
 @admin.register(Estudiante)
 class EstudianteAdmin(admin.ModelAdmin):
-    list_display = ('codigo_barras', 'dni', 'nombre', 'apellidos', 'nombre_padre', 
+    list_display = ('dni', 'nombre', 'apellidos', 'nombre_padre', 
                    'celular_padre', 'activo', 'fecha_registro')
     list_filter = ('activo', 'fecha_registro')
-    search_fields = ('codigo_barras', 'dni', 'nombre', 'apellidos', 'nombre_padre')
+    search_fields = ('dni', 'nombre', 'apellidos', 'nombre_padre')
     ordering = ('apellidos', 'nombre')
 
 @admin.register(RegistroAsistencia)
