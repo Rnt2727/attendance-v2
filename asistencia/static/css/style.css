@@ -27,20 +27,87 @@ body {
 }
 
 .sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: fixed;
     width: 280px;
     background: #1a1a2e;
     color: #ffffff;
-    position: fixed;
-    height: 100vh;
     z-index: 1000;
     box-shadow: 2px 0 15px rgba(0, 0, 0, 0.2);
+    overflow-y: auto; /* si el contenido excede, se mostrará scroll vertical */
 }
+
+
+.sidebar-menu-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 80px; /* Espacio para el footer */
+}
+
+.sidebar-menu {
+    padding: 15px 0;
+}
+
+
 
 .sidebar-header {
     padding: 20px;
     text-align: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
+
+.sidebar-profile {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 10px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+
+.logout-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    background: rgb(218, 51, 51);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.logout-btn:hover {
+    background: rgb(197, 23, 23);
+    color: white;
+}
+
+
+
+
+
+
 
 .school-logo {
     width: 80px;
@@ -112,21 +179,25 @@ body {
 }
 
 .sidebar-footer {
-    position: absolute;
+    position: sticky;
     bottom: 0;
     left: 0;
     right: 0;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.1);
+    background: rgba(0, 0, 0, 0.2);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: auto;
 }
 
 .user-profile {
     display: flex;
     align-items: center;
 }
+
+
 
 .user-avatar {
     width: 40px;
@@ -159,10 +230,27 @@ body {
     padding: 5px;
 }
 
-.logout-btn:hover {
-    opacity: 1;
-    transform: rotate(-15deg);
+
+
+.user-profile img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
 }
+
+
+
+.user-info span {
+    font-weight: 500;
+}
+
+
+
+
+
+
 
 /* Contenido Principal */
 .main-content {
@@ -1244,6 +1332,8 @@ body.dark-mode {
     border: 1px solid var(--info-color);
     color: var(--info-color);
 }
+
+
 
 @media (max-width: 768px) {
     .form-grid {

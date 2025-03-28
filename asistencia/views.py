@@ -56,6 +56,7 @@ def registrar_asistencia(request):
             })
     return JsonResponse({'status': 'error'})
 
+
 @login_required
 def agregar_estudiante(request):
     if request.method == 'POST':
