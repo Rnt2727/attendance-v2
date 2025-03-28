@@ -4,9 +4,7 @@
 <div class="dashboard-container">
 
 
-    <!-- Contenido Principal -->
     <div class="main-content">
-        <!-- Barra Superior -->
         <div class="top-bar">
             <div class="breadcrumb">
                 <span>Dashboard</span>
@@ -33,7 +31,6 @@
             </div>
         </div>
         
-        <!-- Tarjetas Resumen -->
         <div class="summary-cards">
             <div class="summary-card primary">
                 <div class="card-icon">
@@ -92,7 +89,6 @@
             </div>
         </div>
         
-        <!-- Gráficos -->
         <div class="chart-row">
             <div class="chart-container large">
                 <div class="chart-header">
@@ -134,7 +130,6 @@
             </div>
         </div>
         
-        <!-- Últimos Registros -->
         <div class="data-table-container">
             <div class="table-header">
                 <h3>Últimas Asistencias</h3>
@@ -283,7 +278,6 @@
             </div>
         </div>
         
-        <!-- Notificaciones y Alertas -->
         <div class="alert-row">
             <div class="alert-container">
                 <div class="alert-header">
@@ -366,7 +360,6 @@
     </div>
 </div>
 
-<!-- Modal Escaner QR -->
 <div class="modal fade" id="qrScannerModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -424,7 +417,6 @@
     </div>
 </div>
 
-<!-- Modal Detalles Asistencia -->
 <div class="modal fade" id="attendanceDetailModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -519,9 +511,7 @@
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@latest/dist/html5-qrcode.min.js"></script>
 
 <script>
-// Inicializar gráficos
 document.addEventListener('DOMContentLoaded', function() {
-    // Gráfico de Asistencia Semanal
     const ctx = document.getElementById('attendanceChart').getContext('2d');
     const attendanceChart = new Chart(ctx, {
         type: 'line',
@@ -586,7 +576,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Gráfico de Distribución
     const pieCtx = document.getElementById('distributionChart').getContext('2d');
     const distributionChart = new Chart(pieCtx, {
         type: 'doughnut',
@@ -605,7 +594,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'rgba(248, 150, 30, 1)'
                 ],
                 borderWidth: 1,
-                cutout: '75%' // Centro más pequeño
+                cutout: '75%' 
             }]
         },
         options: {
@@ -632,13 +621,12 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             elements: {
                 arc: {
-                    borderWidth: 1.5 // Borde más definido
+                    borderWidth: 1.5 
                 }
             }
         }
     });
 
-    // Scanner QR
     const qrScanner = new Html5QrcodeScanner(
         'qr-reader',
         {
@@ -652,33 +640,27 @@ document.addEventListener('DOMContentLoaded', function() {
     function onScanSuccess(decodedText, decodedResult) {
         console.log(`Código escaneado: ${decodedText}`, decodedResult);
         
-        // Simular datos del estudiante (en producción sería una llamada AJAX)
         $('#studentInfo').removeClass('d-none');
         $('#confirmAttendance').prop('disabled', false);
         
-        // Detener el escáner
         qrScanner.clear();
     }
 
-    // Iniciar escáner cuando se abre el modal
     $('#qrScannerModal').on('shown.bs.modal', function () {
         qrScanner.render(onScanSuccess);
     });
 
-    // Limpiar cuando se cierra el modal
     $('#qrScannerModal').on('hidden.bs.modal', function () {
         qrScanner.clear();
         $('#studentInfo').addClass('d-none');
         $('#confirmAttendance').prop('disabled', true);
     });
 
-    // Confirmar asistencia
     $('#confirmAttendance').click(function() {
         const btn = $(this);
         btn.html('<span class="spinner-border spinner-border-sm" role="status"></span> Registrando...');
         btn.prop('disabled', true);
         
-        // Simular registro (en producción sería una llamada AJAX)
         setTimeout(function() {
             $('#qr-reader-results').html(`
                 <div class="alert alert-success">
@@ -690,37 +672,30 @@ document.addEventListener('DOMContentLoaded', function() {
             
             btn.html('<i class="fas fa-check-circle"></i> Confirmar Asistencia');
             
-            // Actualizar contadores en tiempo real
             const currentCount = parseInt($('.summary-card.success .card-value').text());
             $('.summary-card.success .card-value').text(currentCount + 1);
             
-            // Cerrar modal después de 2 segundos
             setTimeout(function() {
                 $('#qrScannerModal').modal('hide');
             }, 2000);
         }, 1500);
     });
 
-    // Toggle modo oscuro
     $('#darkModeToggle').change(function() {
         $('body').toggleClass('dark-mode');
         localStorage.setItem('darkMode', $(this).is(':checked'));
     });
 
-    // Cargar preferencia de modo oscuro
     if (localStorage.getItem('darkMode') === 'true') {
         $('#darkModeToggle').prop('checked', true);
         $('body').addClass('dark-mode');
     }
 
-    // Mostrar modal de detalles al hacer clic en "Ver"
     $('.btn-action.view').click(function() {
         $('#attendanceDetailModal').modal('show');
     });
 
-    // Actualizar datos cada 30 segundos
     setInterval(function() {
-        // Simular actualización de datos
         const newData = {
             total_estudiantes: 250 + Math.floor(Math.random() * 5),
             asistencias_hoy: 180 + Math.floor(Math.random() * 10),
@@ -728,20 +703,17 @@ document.addEventListener('DOMContentLoaded', function() {
             justificaciones_hoy: 8 + Math.floor(Math.random() * 2)
         };
         
-        // Actualizar tarjetas
         $('.summary-card.primary .card-value').text(newData.total_estudiantes);
         $('.summary-card.success .card-value').text(newData.asistencias_hoy);
         $('.summary-card.danger .card-value').text(newData.inasistencias_hoy);
         $('.summary-card.warning .card-value').text(newData.justificaciones_hoy);
         
-        // Actualizar gráfico de asistencia semanal
         const newChartData = attendanceChart.data.datasets[0].data.map(value => {
             return value > 0 ? value + Math.floor(Math.random() * 10 - 5) : 0;
         });
         attendanceChart.data.datasets[0].data = newChartData;
         attendanceChart.update();
         
-        // Mostrar notificación de actualización
         Toastify({
             text: "Datos actualizados",
             duration: 3000,
@@ -753,19 +725,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }).showToast();
     }, 30000);
 
-    // Botón de refrescar
     $('.btn-refresh').click(function() {
         $(this).addClass('spin');
         setTimeout(() => {
             $(this).removeClass('spin');
         }, 1000);
         
-        // Forzar actualización
         location.reload();
     });
 });
 
-// Función para mostrar notificaciones Toast
 function showToast(message, type = 'success') {
     const bgColor = type === 'success' 
         ? 'linear-gradient(to right, #00b09b, #96c93d)' 

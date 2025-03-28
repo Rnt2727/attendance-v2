@@ -10,7 +10,6 @@ class Estudiante(models.Model):
     activo = models.BooleanField(default=True, null=True, blank=True)
     fecha_registro = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
-    # Nuevos campos:
     NIVEL_CHOICES = [
         ('primaria', 'Primaria'),
         ('secundaria', 'Secundaria'),

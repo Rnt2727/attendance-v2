@@ -25,21 +25,19 @@ SECRET_KEY = 'django-insecure-u#w-b@#0-xy!*=hcb-lmgb$wn909jn)dg567+4=qg$iblwrid^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '98c4-129-222-182-47.ngrok-free.app']
-CSRF_TRUSTED_ORIGINS = ["https://98c4-129-222-182-47.ngrok-free.app"]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'e180-129-222-182-89.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ["https://e180-129-222-182-89.ngrok-free.app"]
+ 
  
 
 
 STATIC_URL = 'static/'
 
-# Agrega esta configuración para los archivos estáticos
 STATICFILES_DIRS = [
-    BASE_DIR / "asistencia/static",  # Ruta a tus archivos estáticos en la app asistencia
+    BASE_DIR / "asistencia/static",  
 ]
 
-# (Opcional, para producción) Ruta donde se recolectarán los estáticos
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',

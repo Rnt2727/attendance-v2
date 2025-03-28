@@ -45,17 +45,14 @@ def scanner_view(request):
 @login_required
 def registrar_asistencia(request):
     if request.method == 'POST':
-        # Ahora se espera que se envíe el dni en lugar del código de barras
         dni = request.POST.get('dni')
         try:
-            # Se busca al estudiante usando el campo dni
             estudiante = Estudiante.objects.get(dni=dni)
             registro = RegistroAsistencia.objects.create(
                 estudiante=estudiante,
                 usuario=request.user
             )
 
-            # Enviar SMS
             if enviar_sms_asistencia(estudiante):
                 registro.notificacion_enviada = True
                 registro.save()
@@ -76,26 +73,21 @@ def registrar_asistencia(request):
 def agregar_estudiante(request):
     if request.method == 'POST':
         try:
-            # Validar datos requeridos
-            dni = request.POST.get('dni')  # Ahora se recibe el dni
+            dni = request.POST.get('dni') 
             nombre = request.POST.get('nombre')
 
             if not dni or not nombre:
                 raise ValueError("DNI y nombre son campos requeridos")
             
-            # Verificar si el dni ya existe
             if Estudiante.objects.filter(dni=dni).exists():
                 raise ValueError("El DNI ya está registrado")
             
-            # Capturar los nuevos campos
             nivel = request.POST.get('nivel', 'primaria')
             grado = request.POST.get('grado')
             seccion = request.POST.get('seccion')
             
-            # Convertir grado a entero si se proporcionó
             grado = int(grado) if grado and grado.isdigit() else None
             
-            # Crear el estudiante (ya no se asigna codigo_barras)
             estudiante = Estudiante.objects.create(
                 dni=dni,
                 nombre=nombre,
@@ -108,7 +100,6 @@ def agregar_estudiante(request):
                 seccion=seccion
             )
             
-            # Determinar si es una solicitud AJAX
             if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
                 return JsonResponse({
                     'status': 'success',
@@ -133,7 +124,6 @@ def agregar_estudiante(request):
 
 @login_required
 def dashboard_view(request):
-    # Obtener datos para el gráfico de asistencia de los últimos 7 días
     end_date = timezone.now()
     start_date = end_date - timedelta(days=7)
 
@@ -143,7 +133,6 @@ def dashboard_view(request):
         total=Count('id')
     ).order_by('fecha__date')
 
-    # Preparar datos para el gráfico
     labels = []
     data = []
     for registro in asistencia_diaria:
@@ -169,7 +158,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')  # Redirige al dashboard en lugar de scanner
+            return redirect('dashboard') 
     return render(request, 'asistencia/login.html')
 
 @login_required
@@ -191,7 +180,6 @@ def registrar_asistencia(request):
                 estudiante=estudiante,
                 usuario=request.user
             )
-            # Enviar SMS
             if enviar_sms_asistencia(estudiante):
                 registro.notificacion_enviada = True
                 registro.save()
@@ -205,39 +193,33 @@ def registrar_asistencia(request):
 
 @login_required
 def exportar_pdf_asistencia(request):
-    # Creamos un buffer en memoria para el PDF
     buffer = BytesIO()
 
-    # Definimos la plantilla del documento en orientación horizontal
     doc = SimpleDocTemplate(buffer, pagesize=landscape(letter), 
                           title="Reporte de Asistencia",
                           topMargin=40,
                           bottomMargin=40)
 
-    # Obtenemos estilos para texto
     styles = getSampleStyleSheet()
     story = []
 
-    # Logo y encabezado
-    logo_path = finders.find("images/logo2.jpg")   # Ajusta la ruta según tu estructura
+    logo_path = finders.find("images/logo2.jpg") 
     logo = Image(logo_path, width=120, height=80)
     logo.hAlign = 'CENTER'
     story.append(logo)
     story.append(Spacer(1, 10))
 
-    # Título del colegio
     colegio_style = ParagraphStyle(
         'colegio',
         parent=styles['Heading1'],
         fontSize=16,
-        alignment=1,  # Centrado
+        alignment=1, 
         spaceAfter=6,
         textColor=colors.HexColor("#003366")
     )
     colegio = Paragraph("COLEGIO ADVENTISTA JOSÉ PARDO", colegio_style)
     story.append(colegio)
 
-    # Título del reporte
     title_style = ParagraphStyle(
         'title',
         parent=styles['Heading2'],
@@ -248,7 +230,6 @@ def exportar_pdf_asistencia(request):
     title = Paragraph("REPORTE DETALLADO DE ASISTENCIA", title_style)
     story.append(title)
 
-    # Información del reporte
     fecha_style = ParagraphStyle(
         'fecha',
         parent=styles['Normal'],
@@ -259,15 +240,12 @@ def exportar_pdf_asistencia(request):
     fecha_reporte = Paragraph(f"Generado el: {timezone.now().strftime('%d/%m/%Y %H:%M')} | Usuario: {request.user.username}", fecha_style)
     story.append(fecha_reporte)
 
-    # Consultamos los registros de asistencia
     registros = RegistroAsistencia.objects.select_related('estudiante', 'usuario').order_by('-fecha')
 
-    # Definimos la cabecera de la tabla con más columnas
     data = [
         ["N°", "Estudiante", "DNI", "Fecha", "Hora", "Notificación", "Registrado por"]
     ]
 
-    # Agregamos cada registro a la tabla
     for i, reg in enumerate(registros, 1):
         estudiante_nombre = f"{reg.estudiante.nombre} {reg.estudiante.apellidos}"
         fecha = reg.fecha.strftime("%d/%m/%Y")
@@ -284,10 +262,8 @@ def exportar_pdf_asistencia(request):
             usuario
         ])
 
-    # Creamos la tabla con estilo profesional
     table = Table(data, colWidths=[30, 180, 80, 70, 60, 70, 100])
     table.setStyle(TableStyle([
-        # Estilo cabecera
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#003366")),
         ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
         ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
@@ -295,37 +271,32 @@ def exportar_pdf_asistencia(request):
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         
-        # Bordes y relleno
         ('GRID', (0, 0), (-1, -1), 0.5, colors.lightgrey),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
         ('BOTTOMPADDING', (0, 0), (-1, 0), 8),
         ('TOPPADDING', (0, 1), (-1, -1), 4),
         ('BOTTOMPADDING', (0, 1), (-1, -1), 4),
         
-        # Alternar colores de fila
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#f5f9ff")])
     ]))
     
     story.append(table)
     story.append(Spacer(1, 20))
 
-    # Pie de página
     footer_style = ParagraphStyle(
         'footer',
         parent=styles['Italic'],
         fontSize=8,
-        alignment=2,  # Derecha
+        alignment=2,
         textColor=colors.grey
     )
     footer = Paragraph("Sistema de Gestión de Asistencia - Colegio Adventista José Pardo", footer_style)
     story.append(footer)
 
-    # Construimos el documento
     doc.build(story)
     pdf = buffer.getvalue()
     buffer.close()
 
-    # Retornamos el PDF para descarga
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename="reporte_asistencia_detallado.pdf"'
     response.write(pdf)

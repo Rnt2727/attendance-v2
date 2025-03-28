@@ -154,7 +154,6 @@ body {
     opacity: 0.9;
 }
 
-/* Lado derecho con formulario */
 .login-right {
     width: 50%;
     background-color: var(--dark-color);
@@ -343,7 +342,6 @@ body {
     text-decoration: underline;
 }
 
-/* Responsive */
 @media (max-width: 992px) {
     .login-left {
         display: none;
@@ -369,7 +367,6 @@ body {
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Efecto de enfoque en los inputs
     const inputs = document.querySelectorAll('.form-control');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
@@ -381,7 +378,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Validación del formulario
     const form = document.querySelector('.login-form');
     form.addEventListener('submit', function(e) {
         let valid = true;
@@ -410,8 +406,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Mostrar/ocultar contraseña (podría implementarse con un icono de ojo)
-    // ...
+   
 });
 </script>
 {% endblock %}
