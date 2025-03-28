@@ -1092,7 +1092,7 @@ input:checked + .slider:before {
 /* Modo Oscuro */
 body.dark-mode {
     background-color: #1a1a2e;
-    color: #e6e6e6;
+    color: #000000;
 }
 
 .dark-mode .main-content {
@@ -1371,11 +1371,51 @@ body.dark-mode {
 
 
 
+/* 
+ * Estilos CSS para modo oscuro en elementos .student-info
+ * Se aplican solo cuando el modo oscuro está activado (sistema o manual)
+ */
 
 
 
-
-
-
-
-
+  
+  /* Modo oscuro automático (preferencias del sistema) */
+  @media (prefers-color-scheme: dark) {
+    .student-info {
+      background-color: #1a1a1a;     /* Fondo oscuro */
+      color: #fff;                  /* Texto blanco */
+      border: 1px solid #333;       /* Borde sutil */
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    }
+    
+    .student-info h3,
+    .student-info p {
+      color: #f0f0f0;              /* Texto blanco suave */
+    }
+  }
+  
+  /* Modo oscuro manual (activado con clase) */
+  .dark-mode .student-info {
+    background-color: #162233 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+  }
+  
+  .dark-mode .student-info h3,
+  .dark-mode .student-info p {
+    color: #f0f0f0 !important;
+  }
+  
+  /* Reset para cuando se desactiva el modo oscuro */
+  body:not(.dark-mode) .student-info {
+    background-color: #f9f9f9;
+    color: #333;
+    border: none;
+    box-shadow: none;
+  }
+  
+  body:not(.dark-mode) .student-info h3,
+  body:not(.dark-mode) .student-info p {
+    color: inherit;
+  }

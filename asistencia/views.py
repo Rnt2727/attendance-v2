@@ -30,7 +30,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return redirect('dashboard')  # Redirige al dashboard en lugar de scanner
+            return redirect('dashboard') 
     return render(request, 'asistencia/login.html')
 
 @login_required

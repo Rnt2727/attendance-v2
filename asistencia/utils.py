@@ -8,9 +8,7 @@ def enviar_notificaciones_asistencia(estudiante):
 
 def enviar_sms_asistencia(estudiante):
     try:
-        account_sid = ''
-        auth_token = ''
-        twilio_phone_number = ''  
+          
         
         client = Client(account_sid, auth_token)
 
