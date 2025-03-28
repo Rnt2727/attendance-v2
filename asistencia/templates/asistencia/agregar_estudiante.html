@@ -1,0 +1,205 @@
+{% extends 'asistencia/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" 
+                 alt="Logo Colegio" class="school-logo">
+            <h3 class="school-name">Colegio adventista Jose pardo</h3>
+            <p class="school-motto">Educación de Calidad</p>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Principal</div>
+                <a href="{% url 'dashboard' %}" class="menu-item">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            <div class="menu-section">
+                <div class="menu-title">Asistencia</div>
+                <a href="{% url 'scanner' %}" class="menu-item">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Registrar Asistencia</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Escanear QR</span>
+                </a>
+            </div>
+            <div class="menu-section">
+                <div class="menu-title">Estudiantes</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Lista de Estudiantes</span>
+                </a>
+                <a href="{% url 'agregar_estudiante' %}" class="menu-item active">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Agregar Estudiante</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>Carnets</span>
+                </a>
+            </div>
+            <div class="menu-section">
+                <div class="menu-title">Reportes</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Estadísticas</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Exportar Datos</span>
+                </a>
+            </div>
+        </div>
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40" alt="Usuario" class="user-avatar">
+                <div class="user-info">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-role">Administrador</span>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Agregar Nuevo Estudiante</h2>
+                    </div>
+                    <div class="card-body">
+                        {% if error_message %}
+                        <div class="alert alert-danger mb-4">
+                            {{ error_message }}
+                        </div>
+                        {% endif %}
+                        
+                        <form id="estudianteForm" method="POST" action="{% url 'agregar_estudiante' %}">
+                            {% csrf_token %}
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="codigo_barras" class="form-label">Código de Barras</label>
+                                    <input type="text" class="form-control" id="codigo_barras" name="codigo_barras" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="dni" class="form-label">DNI</label>
+                                    <input type="text" class="form-control" id="dni" name="dni">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nombre" class="form-label">Nombres</label>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="apellidos" class="form-label">Apellidos</label>
+                                    <input type="text" class="form-control" id="apellidos" name="apellidos">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nombre_padre" class="form-label">Nombre del Padre/Madre</label>
+                                    <input type="text" class="form-control" id="nombre_padre" name="nombre_padre">
+                                </div>
+                                <div class="form-group">
+                                    <label for="celular_padre" class="form-label">Celular del Padre/Madre</label>
+                                    <input type="number" class="form-control" id="celular_padre" name="celular_padre">
+                                </div>
+                                
+                                <!-- Nuevos campos -->
+                                <div class="form-group">
+                                    <label for="nivel" class="form-label">Nivel</label>
+                                    <select id="nivel" name="nivel" class="form-control" required>
+                                        <option value="primaria" selected>Primaria</option>
+                                        <option value="secundaria">Secundaria</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="grado" class="form-label">Grado</label>
+                                    <input type="number" class="form-control" id="grado" name="grado" min="1" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="seccion" class="form-label">Sección</label>
+                                    <input type="text" class="form-control" id="seccion" name="seccion" maxlength="1" required>
+                                </div>
+                            </div>
+                            
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" id="activo" name="activo" checked>
+                                <label class="form-check-label" for="activo">Estudiante Activo</label>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Guardar Estudiante
+                                </button>
+                            </div>
+                        </form>
+                        <div id="resultado" class="alert mt-3" style="display:none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('estudianteForm');
+    const resultadoDiv = document.getElementById('resultado');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        resultadoDiv.textContent = 'Procesando...';
+        resultadoDiv.className = 'alert alert-info mt-3';
+        resultadoDiv.style.display = 'block';
+        
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Error en la respuesta');
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                resultadoDiv.textContent = `Estudiante ${data.nombre} registrado exitosamente`;
+                resultadoDiv.className = 'alert alert-success mt-3';
+                form.reset();
+                setTimeout(() => {
+                    resultadoDiv.style.display = 'none';
+                    document.getElementById('codigo_barras').focus();
+                }, 3000);
+            } else {
+                throw new Error(data.message || 'Error al registrar');
+            }
+        })
+        .catch(error => {
+            resultadoDiv.textContent = error.message;
+            resultadoDiv.className = 'alert alert-danger mt-3';
+        });
+    });
+});
+</script>
+{% endblock %}

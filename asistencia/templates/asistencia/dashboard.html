@@ -1,0 +1,851 @@
+{% extends 'asistencia/base.html' %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar Elegante -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" alt="Logo Colegio" class="school-logo">
+            <h3 class="school-name">Colegio Advetista Jose Pardo</h3>
+            <p class="school-motto">Educación de Calidad</p>
+        </div>
+        
+        <div class="sidebar-menu">
+            <div class="menu-section">
+                <div class="menu-title">Principal</div>
+                <a href="#" class="menu-item active">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Asistencia</div>
+                <a href="{% url 'scanner' %}" class="menu-item"> <i class="fas fa-calendar-check"></i> <span>Registrar Asistencia</span> </a>
+
+                <a href="#" class="menu-item">
+                    <i class="fas fa-history"></i>
+                    <span>Historial</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-qrcode"></i>
+                    <span>Escanear QR</span>
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Estudiantes</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>Lista de Estudiantes</span>
+                </a>
+                <a href="{% url 'agregar_estudiante' %}" class="menu-item {% if request.path == '/agregar-estudiante/' %}active{% endif %}">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Agregar Estudiante</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-id-card"></i>
+                    <span>Carnets</span>
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-title">Reportes</div>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>Estadísticas</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-file-excel"></i>
+                    <span>Exportar Datos</span>
+                </a>
+            </div>
+        </div>
+        
+        <div class="sidebar-footer">
+            <div class="user-profile">
+                <img src="https://via.placeholder.com/40" alt="Usuario" class="user-avatar">
+                <div class="user-info">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-role">Administrador</span>
+                </div>
+            </div>
+            <a href="{% url 'logout' %}" class="logout-btn">
+                <i class="fas fa-sign-out-alt"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Contenido Principal -->
+    <div class="main-content">
+        <!-- Barra Superior -->
+        <div class="top-bar">
+            <div class="breadcrumb">
+                <span>Dashboard</span>
+                <span>/</span>
+                <span class="active">Resumen</span>
+            </div>
+            
+            <div class="top-bar-actions">
+                <div class="date-display">
+                    <i class="fas fa-calendar-day"></i>
+                    <span>{% now "l, d F Y" %}</span>
+                </div>
+                <button class="btn-refresh">
+                    <i class="fas fa-sync-alt"></i>
+                </button>
+                <div class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                    <label class="switch">
+                        <input type="checkbox" id="darkModeToggle">
+                        <span class="slider round"></span>
+                    </label>
+                    <i class="fas fa-sun"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tarjetas Resumen -->
+        <div class="summary-cards">
+            <div class="summary-card primary">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-title">Total Estudiantes</span>
+                    <span class="card-value">{{ total_estudiantes }}</span>
+                </div>
+                <div class="card-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>5%</span>
+                </div>
+            </div>
+            
+            <div class="summary-card success">
+                <div class="card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-title">Asistencias Hoy</span>
+                    <span class="card-value">{{ asistencias_hoy }}</span>
+                </div>
+                <div class="card-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12%</span>
+                </div>
+            </div>
+            
+            <div class="summary-card danger">
+                <div class="card-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-title">Inasistencias Hoy</span>
+                    <span class="card-value">{{ inasistencias_hoy }}</span>
+                </div>
+                <div class="card-trend down">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>3%</span>
+                </div>
+            </div>
+            
+            <div class="summary-card warning">
+                <div class="card-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="card-info">
+                    <span class="card-title">Justificaciones</span>
+                    <span class="card-value">{{ justificaciones_hoy }}</span>
+                </div>
+                <div class="card-trend up">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8%</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Gráficos -->
+        <div class="chart-row">
+            <div class="chart-container large">
+                <div class="chart-header">
+                    <h3>Asistencia Semanal</h3>
+                    <div class="chart-actions">
+                        <select class="form-select">
+                            <option>Últimos 7 días</option>
+                            <option>Últimos 14 días</option>
+                            <option>Este mes</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="attendanceChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="chart-container small">
+                <div class="chart-header">
+                    <h3>Distribución</h3>
+                </div>
+                <div class="chart-body">
+                    <canvas id="distributionChart"></canvas>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <span class="legend-color present"></span>
+                            <span>Presentes (75%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color absent"></span>
+                            <span>Ausentes (15%)</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="legend-color justified"></span>
+                            <span>Justificados (10%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Últimos Registros -->
+        <div class="data-table-container">
+            <div class="table-header">
+                <h3>Últimas Asistencias</h3>
+                <div class="table-actions">
+                    <button class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Nuevo Registro
+                    </button>
+                    <button class="btn btn-secondary">
+                        <i class="fas fa-filter"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Grado</th>
+                            <th>Fecha</th>
+                            <th>Hora</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <img src="https://via.placeholder.com/40" alt="Estudiante" class="student-avatar">
+                                    <span>María González</span>
+                                </div>
+                            </td>
+                            <td>5° Primaria</td>
+                            <td>{% now "d/m/Y" %}</td>
+                            <td>{% now "H:i" %}</td>
+                            <td><span class="badge present">Presente</span></td>
+                            <td>
+                                <button class="btn-action view">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <img src="https://via.placeholder.com/40" alt="Estudiante" class="student-avatar">
+                                    <span>Juan Pérez</span>
+                                </div>
+                            </td>
+                            <td>4° Secundaria</td>
+                            <td>{% now "d/m/Y" %}</td>
+                            <td>{% now "H:i" %}</td>
+                            <td><span class="badge absent">Ausente</span></td>
+                            <td>
+                                <button class="btn-action view">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <img src="https://via.placeholder.com/40" alt="Estudiante" class="student-avatar">
+                                    <span>Carlos Rodríguez</span>
+                                </div>
+                            </td>
+                            <td>6° Primaria</td>
+                            <td>{% now "d/m/Y" %}</td>
+                            <td>{% now "H:i" %}</td>
+                            <td><span class="badge justified">Justificado</span></td>
+                            <td>
+                                <button class="btn-action view">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <img src="https://via.placeholder.com/40" alt="Estudiante" class="student-avatar">
+                                    <span>Ana Martínez</span>
+                                </div>
+                            </td>
+                            <td>3° Secundaria</td>
+                            <td>{% now "d/m/Y" %}</td>
+                            <td>{% now "H:i" %}</td>
+                            <td><span class="badge present">Presente</span></td>
+                            <td>
+                                <button class="btn-action view">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="student-info">
+                                    <img src="https://via.placeholder.com/40" alt="Estudiante" class="student-avatar">
+                                    <span>Luis Sánchez</span>
+                                </div>
+                            </td>
+                            <td>2° Secundaria</td>
+                            <td>{% now "d/m/Y" %}</td>
+                            <td>{% now "H:i" %}</td>
+                            <td><span class="badge present">Presente</span></td>
+                            <td>
+                                <button class="btn-action view">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn-action edit">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="table-footer">
+                <div class="table-info">
+                    Mostrando 1 a 5 de 120 registros
+                </div>
+                <div class="table-pagination">
+                    <button class="page-btn disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="page-btn active">1</button>
+                    <button class="page-btn">2</button>
+                    <button class="page-btn">3</button>
+                    <button class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notificaciones y Alertas -->
+        <div class="alert-row">
+            <div class="alert-container">
+                <div class="alert-header">
+                    <h3>Alertas Recientes</h3>
+                    <a href="#" class="view-all">Ver todas</a>
+                </div>
+                <div class="alert-list">
+                    <div class="alert-item danger">
+                        <div class="alert-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Inasistencias consecutivas</h4>
+                            <p>5 estudiantes con 3 o más inasistencias</p>
+                            <span class="alert-time">Hace 2 horas</span>
+                        </div>
+                    </div>
+                    <div class="alert-item warning">
+                        <div class="alert-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Retrasos frecuentes</h4>
+                            <p>12 estudiantes llegaron tarde hoy</p>
+                            <span class="alert-time">Hoy</span>
+                        </div>
+                    </div>
+                    <div class="alert-item info">
+                        <div class="alert-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="alert-content">
+                            <h4>Justificaciones pendientes</h4>
+                            <p>3 justificaciones requieren revisión</p>
+                            <span class="alert-time">Hace 1 día</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="notification-container">
+                <div class="notification-header">
+                    <h3>Notificaciones</h3>
+                    <a href="#" class="view-all">Ver todas</a>
+                </div>
+                <div class="notification-list">
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h4>Nuevo mensaje</h4>
+                            <p>Padre de Juan Pérez justificó inasistencia</p>
+                            <span class="notification-time">15 min ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fas fa-user-clock"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h4>Asistencia irregular</h4>
+                            <p>María González no registra asistencia en 2 días</p>
+                            <span class="notification-time">1 hora ago</span>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon">
+                            <i class="fas fa-sync-alt"></i>
+                        </div>
+                        <div class="notification-content">
+                            <h4>Actualización del sistema</h4>
+                            <p>Nueva versión disponible</p>
+                            <span class="notification-time">3 horas ago</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Escaner QR -->
+<div class="modal fade" id="qrScannerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Registrar Asistencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="scanner-container">
+                    <div id="qr-reader" style="width: 100%"></div>
+                    <div id="qr-reader-results" class="mt-3"></div>
+                </div>
+                
+                <div class="manual-entry mt-4">
+                    <h6>O ingrese manualmente</h6>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Código del estudiante">
+                        <button class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="student-info mt-4 d-none" id="studentInfo">
+                    <div class="info-header">
+                        <img src="https://via.placeholder.com/60" alt="Estudiante" class="student-avatar">
+                        <div class="info-title">
+                            <h5>Juan Pérez</h5>
+                            <span>4° Secundaria - Grupo A</span>
+                        </div>
+                    </div>
+                    <div class="info-details">
+                        <div class="detail-item">
+                            <span class="detail-label">Código:</span>
+                            <span class="detail-value">EST20230045</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Edad:</span>
+                            <span class="detail-value">15 años</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Tutor:</span>
+                            <span class="detail-value">María Pérez</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmAttendance" disabled>
+                    <i class="fas fa-check-circle"></i> Confirmar Asistencia
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Detalles Asistencia -->
+<div class="modal fade" id="attendanceDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles de Asistencia</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="detail-header">
+                    <div class="student-info">
+                        <img src="https://via.placeholder.com/80" alt="Estudiante" class="student-avatar-lg">
+                        <div class="student-meta">
+                            <h4>María González</h4>
+                            <span>5° Primaria - Grupo B</span>
+                        </div>
+                    </div>
+                    <div class="attendance-status present">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Presente</span>
+                    </div>
+                </div>
+                
+                <div class="detail-content">
+                    <div class="detail-section">
+                        <h6>Información de Asistencia</h6>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">Fecha:</span>
+                                    <span class="detail-value">{% now "d/m/Y" %}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Hora:</span>
+                                    <span class="detail-value">{% now "H:i" %}</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="detail-item">
+                                    <span class="detail-label">Registrado por:</span>
+                                    <span class="detail-value">Prof. Carlos Ruiz</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Método:</span>
+                                    <span class="detail-value">Scanner QR</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-section">
+                        <h6>Historial Reciente</h6>
+                        <div class="history-list">
+                            <div class="history-item">
+                                <div class="history-date">Ayer</div>
+                                <div class="history-status present">Presente</div>
+                                <div class="history-time">07:45 AM</div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-date">Lunes</div>
+                                <div class="history-status absent">Ausente</div>
+                                <div class="history-time">-</div>
+                            </div>
+                            <div class="history-item">
+                                <div class="history-date">Viernes</div>
+                                <div class="history-status present">Presente</div>
+                                <div class="history-time">07:50 AM</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Editar Registro
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block styles %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@latest/dist/html5-qrcode.min.js"></script>
+
+<script>
+// Inicializar gráficos
+document.addEventListener('DOMContentLoaded', function() {
+    // Gráfico de Asistencia Semanal
+    const ctx = document.getElementById('attendanceChart').getContext('2d');
+    const attendanceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'],
+            datasets: [{
+                label: 'Asistencias',
+                data: [120, 190, 170, 200, 180, 0, 0],
+                backgroundColor: 'rgba(76, 201, 240, 0.1)',
+                borderColor: 'rgba(76, 201, 240, 1)',
+                borderWidth: 2,
+                tension: 0.3,
+                fill: true,
+                pointBackgroundColor: 'white',
+                pointBorderColor: 'rgba(76, 201, 240, 1)',
+                pointBorderWidth: 2,
+                pointRadius: 4,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    padding: 12,
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            },
+            scales: {
+                x: {
+                    grid: {
+                        display: false
+                    },
+                    ticks: {
+                        color: '#6c757d'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.05)'
+                    },
+                    ticks: {
+                        color: '#6c757d',
+                        stepSize: 50
+                    }
+                }
+            }
+        }
+    });
+
+    // Gráfico de Distribución
+    const pieCtx = document.getElementById('distributionChart').getContext('2d');
+    const distributionChart = new Chart(pieCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Presentes', 'Ausentes', 'Justificados'],
+            datasets: [{
+                data: [75, 15, 10],
+                backgroundColor: [
+                    'rgba(76, 201, 240, 1)',
+                    'rgba(247, 37, 133, 1)',
+                    'rgba(248, 150, 30, 1)'
+                ],
+                borderColor: [
+                    'rgba(76, 201, 240, 0.8)',
+                    'rgba(247, 37, 133, 0.8)',
+                    'rgba(248, 150, 30, 0.8)'
+                ],
+                borderWidth: 1,
+                cutout: '70%'
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    bodyFont: {
+                        size: 12
+                    },
+                    padding: 10,
+                    cornerRadius: 8,
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.raw + '%';
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Scanner QR
+    const qrScanner = new Html5QrcodeScanner(
+        'qr-reader',
+        {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+            rememberLastUsedCamera: true
+        },
+        false
+    );
+
+    function onScanSuccess(decodedText, decodedResult) {
+        console.log(`Código escaneado: ${decodedText}`, decodedResult);
+        
+        // Simular datos del estudiante (en producción sería una llamada AJAX)
+        $('#studentInfo').removeClass('d-none');
+        $('#confirmAttendance').prop('disabled', false);
+        
+        // Detener el escáner
+        qrScanner.clear();
+    }
+
+    // Iniciar escáner cuando se abre el modal
+    $('#qrScannerModal').on('shown.bs.modal', function () {
+        qrScanner.render(onScanSuccess);
+    });
+
+    // Limpiar cuando se cierra el modal
+    $('#qrScannerModal').on('hidden.bs.modal', function () {
+        qrScanner.clear();
+        $('#studentInfo').addClass('d-none');
+        $('#confirmAttendance').prop('disabled', true);
+    });
+
+    // Confirmar asistencia
+    $('#confirmAttendance').click(function() {
+        const btn = $(this);
+        btn.html('<span class="spinner-border spinner-border-sm" role="status"></span> Registrando...');
+        btn.prop('disabled', true);
+        
+        // Simular registro (en producción sería una llamada AJAX)
+        setTimeout(function() {
+            $('#qr-reader-results').html(`
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i>
+                    <strong>Asistencia registrada</strong>
+                    <p>Estudiante: Juan Pérez - 4° Secundaria</p>
+                </div>
+            `);
+            
+            btn.html('<i class="fas fa-check-circle"></i> Confirmar Asistencia');
+            
+            // Actualizar contadores en tiempo real
+            const currentCount = parseInt($('.summary-card.success .card-value').text());
+            $('.summary-card.success .card-value').text(currentCount + 1);
+            
+            // Cerrar modal después de 2 segundos
+            setTimeout(function() {
+                $('#qrScannerModal').modal('hide');
+            }, 2000);
+        }, 1500);
+    });
+
+    // Toggle modo oscuro
+    $('#darkModeToggle').change(function() {
+        $('body').toggleClass('dark-mode');
+        localStorage.setItem('darkMode', $(this).is(':checked'));
+    });
+
+    // Cargar preferencia de modo oscuro
+    if (localStorage.getItem('darkMode') === 'true') {
+        $('#darkModeToggle').prop('checked', true);
+        $('body').addClass('dark-mode');
+    }
+
+    // Mostrar modal de detalles al hacer clic en "Ver"
+    $('.btn-action.view').click(function() {
+        $('#attendanceDetailModal').modal('show');
+    });
+
+    // Actualizar datos cada 30 segundos
+    setInterval(function() {
+        // Simular actualización de datos
+        const newData = {
+            total_estudiantes: 250 + Math.floor(Math.random() * 5),
+            asistencias_hoy: 180 + Math.floor(Math.random() * 10),
+            inasistencias_hoy: 15 + Math.floor(Math.random() * 3),
+            justificaciones_hoy: 8 + Math.floor(Math.random() * 2)
+        };
+        
+        // Actualizar tarjetas
+        $('.summary-card.primary .card-value').text(newData.total_estudiantes);
+        $('.summary-card.success .card-value').text(newData.asistencias_hoy);
+        $('.summary-card.danger .card-value').text(newData.inasistencias_hoy);
+        $('.summary-card.warning .card-value').text(newData.justificaciones_hoy);
+        
+        // Actualizar gráfico de asistencia semanal
+        const newChartData = attendanceChart.data.datasets[0].data.map(value => {
+            return value > 0 ? value + Math.floor(Math.random() * 10 - 5) : 0;
+        });
+        attendanceChart.data.datasets[0].data = newChartData;
+        attendanceChart.update();
+        
+        // Mostrar notificación de actualización
+        Toastify({
+            text: "Datos actualizados",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            backgroundColor: "linear-gradient(to right, #00b09b, #96c93d)",
+            stopOnFocus: true
+        }).showToast();
+    }, 30000);
+
+    // Botón de refrescar
+    $('.btn-refresh').click(function() {
+        $(this).addClass('spin');
+        setTimeout(() => {
+            $(this).removeClass('spin');
+        }, 1000);
+        
+        // Forzar actualización
+        location.reload();
+    });
+});
+
+// Función para mostrar notificaciones Toast
+function showToast(message, type = 'success') {
+    const bgColor = type === 'success' 
+        ? 'linear-gradient(to right, #00b09b, #96c93d)' 
+        : 'linear-gradient(to right, #ff5f6d, #ffc371)';
+    
+    Toastify({
+        text: message,
+        duration: 3000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        backgroundColor: bgColor,
+        stopOnFocus: true
+    }).showToast();
+}
+</script>
+{% endblock %}
