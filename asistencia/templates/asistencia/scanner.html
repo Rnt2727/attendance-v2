@@ -3,75 +3,7 @@
 {% block content %}
 <div class="dashboard-container">
     <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <img src="https://scontent.flim6-4.fna.fbcdn.net/v/t1.6435-9/170508169_3524127621024678_1898352335121969967_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeEQLgjE-08M2E2ZW10xsBog6iF6ZqLy24PqIXpmovLbgzS_upwFqU1RwSkURKZKF6P6w5Nu3o5bCSwqFwPEt-Wp&_nc_ohc=bvNdlIy0pi0Q7kNvgGldiyn&_nc_oc=Adn06K1OKnVL23wsOd3fsmBYOXmCa4f4yIhqjLKVrXwKott-kGeBXwU-2rSsU_yF4W4&_nc_zt=23&_nc_ht=scontent.flim6-4.fna&_nc_gid=SFxe-LIo-7ZvbST2dlGScQ&oh=00_AYEhjpnMfmt1T2QUyXdLaCBJUqvpdzhEsQf6Xk6D-ara5Q&oe=680CFC77" alt="Logo Colegio" class="school-logo">
-            <h3 class="school-name">Colegio adventista Jose pardo</h3>
-            <p class="school-motto">Educación de Calidad</p>
-        </div>
-        <div class="sidebar-menu">
-            <div class="menu-section">
-                <div class="menu-title">Principal</div>
-                <a href="{% url 'dashboard' %}" class="menu-item">
-                    <i class="fas fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </div>
-            <div class="menu-section">
-                <div class="menu-title">Asistencia</div>
-                <a href="{% url 'scanner' %}" class="menu-item active">
-                    <i class="fas fa-calendar-check"></i>
-                    <span>Registrar Asistencia</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-history"></i>
-                    <span>Historial</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-qrcode"></i>
-                    <span>Escanear QR</span>
-                </a>
-            </div>
-            <div class="menu-section">
-                <div class="menu-title">Estudiantes</div>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-user-graduate"></i>
-                    <span>Lista de Estudiantes</span>
-                </a>
-                <a href="{% url 'agregar_estudiante' %}" class="menu-item">
-                    <i class="fas fa-plus-circle"></i>
-                    <span>Agregar Estudiante</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-id-card"></i>
-                    <span>Carnets</span>
-                </a>
-            </div>
-            <div class="menu-section">
-                <div class="menu-title">Reportes</div>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-chart-pie"></i>
-                    <span>Estadísticas</span>
-                </a>
-                <a href="#" class="menu-item">
-                    <i class="fas fa-file-excel"></i>
-                    <span>Exportar Datos</span>
-                </a>
-            </div>
-        </div>
-        <div class="sidebar-footer">
-            <div class="user-profile">
-                <img src="https://via.placeholder.com/40" alt="Usuario" class="user-avatar">
-                <div class="user-info">
-                    <span class="user-name">{{ user.username }}</span>
-                    <span class="user-role">Administrador</span>
-                </div>
-            </div>
-            <a href="{% url 'logout' %}" class="logout-btn">
-                <i class="fas fa-sign-out-alt"></i>
-            </a>
-        </div>
-    </div>
+   
 
     <!-- Área de Contenido Principal -->
     <div class="main-content">
