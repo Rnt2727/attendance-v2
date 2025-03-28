@@ -18,6 +18,7 @@ from django.contrib import admin
 from django.urls import path
 from asistencia import views
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.dashboard_view, name='dashboard'), 
@@ -26,5 +27,7 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('registrar/', views.registrar_asistencia, name='registrar'),
     path('agregar-estudiante/', views.agregar_estudiante, name='agregar_estudiante'),
+    path('exportar-pdf/', views.exportar_pdf_asistencia, name='exportar_pdf_asistencia'),
+
 ]
 
